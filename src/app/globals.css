@@ -1,0 +1,168 @@
+@import "tailwindcss";
+
+:root {
+  --background: #070b16;
+  --foreground: #e5e7eb;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Inter, Arial, Helvetica, sans-serif;
+}
+
+.container {
+  width: min(1100px, 92vw);
+  margin: 0 auto;
+  padding: 2rem 0 3rem;
+}
+
+h1 {
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  margin-bottom: 0.35rem;
+}
+
+.subtitle {
+  color: #9ca3af;
+  margin-bottom: 1rem;
+}
+
+.panel,
+.card {
+  background: #111827;
+  border: 1px solid #243041;
+  border-radius: 14px;
+  padding: 1rem;
+}
+
+.row {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+}
+
+input,
+textarea,
+button {
+  font: inherit;
+}
+
+input,
+textarea {
+  width: 100%;
+  background: #0c1424;
+  color: #e5e7eb;
+  border: 1px solid #243041;
+  border-radius: 10px;
+  padding: 0.6rem 0.7rem;
+}
+
+button {
+  background: linear-gradient(135deg, #2563eb, #7c3aed);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 0.6rem 0.85rem;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.quick {
+  color: #93c5fd;
+  margin: 0.7rem 0;
+}
+
+.error {
+  color: #fca5a5;
+  margin-top: 0.4rem;
+}
+
+.grid {
+  margin-top: 1rem;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+
+.card h3 {
+  margin: 0 0 0.4rem;
+}
+
+.card ul {
+  margin: 0.3rem 0 0;
+  padding-left: 1.1rem;
+}
+
+.panel {
+  margin-top: 1rem;
+}
+
+pre {
+  margin-top: 0.7rem;
+  white-space: pre-wrap;
+  background: #0c1424;
+  border: 1px solid #243041;
+  border-radius: 10px;
+  padding: 0.7rem;
+}
+
+.table {
+  margin-top: 0.75rem;
+  border: 1px solid #243041;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.thead,
+.trow {
+  display: grid;
+  grid-template-columns: 2fr repeat(4, 1fr);
+  gap: 0.4rem;
+  padding: 0.55rem 0.7rem;
+}
+
+.thead {
+  background: #0c1424;
+  color: #93c5fd;
+  font-weight: 700;
+}
+
+.trow {
+  border-top: 1px solid #243041;
+}
+
+@media (max-width: 800px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .thead,
+  .trow {
+    grid-template-columns: 1.4fr repeat(4, 1fr);
+    font-size: 0.86rem;
+  }
+}
