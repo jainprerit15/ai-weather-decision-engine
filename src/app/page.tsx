@@ -23,6 +23,17 @@ type WeatherBundle = {
 
 const clamp = (n: number, min = 0, max = 100) => Math.max(min, Math.min(max, n));
 
+async function readApiError(response: Response, label: string) {
+  let detail = "";
+  try {
+    const data = await response.json();
+    detail = data?.message ? `: ${data.message}` : "";
+  } catch {
+    detail = "";
+  }
+  return `${label} failed (${response.status}${detail})`;
+}
+
 function parseBundle(current: any, forecast: any): WeatherBundle {
   return {
     city: current.name,
@@ -109,9 +120,17 @@ export default function Home() {
   async function fetchWeather(target: string) {
     const key = process.env.NEXT_PUBLIC_OPENWEATHER_API_KEY;
     if (!key) throw new Error("Add NEXT_PUBLIC_OPENWEATHER_API_KEY to .env.local");
+
     const c = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(target)}&appid=${key}&units=metric`);
+    if (!c.ok) {
+      throw new Error(await readApiError(c, `Current weather for ${target}`));
+    }
+
     const f = await fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${encodeURIComponent(target)}&appid=${key}&units=metric`);
-    if (!c.ok || !f.ok) throw new Error(`Could not load weather for ${target}`);
+    if (!f.ok) {
+      throw new Error(await readApiError(f, `Forecast for ${target}`));
+    }
+
     return parseBundle(await c.json(), await f.json());
   }
 
