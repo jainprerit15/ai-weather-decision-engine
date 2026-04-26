@@ -151,22 +151,25 @@ export default function Home() {
 
   async function askAi() {
     if (!weather) return setAnswer("Analyze city first.");
-    const openAi = process.env.NEXT_PUBLIC_OPENAI_API_KEY;
-    if (!openAi) {
-      return setAnswer("Add NEXT_PUBLIC_OPENAI_API_KEY for LLM Q&A. Fallback: use workout window + risk cards for practical planning.");
-    }
+
     setLoading(true);
+    setAnswer("Generating AI response...");
     try {
-      const prompt = `Weather data: ${JSON.stringify(weather)}. Question: ${question}. Respond with concise actionable answer and confidence out of 100.`;
-      const res = await fetch("https://api.openai.com/v1/responses", {
+      const res = await fetch("/api/ask-weather", {
         method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${openAi}` },
-        body: JSON.stringify({ model: "gpt-4.1-mini", input: prompt })
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ question, weather })
       });
+
+      if (!res.ok) {
+        const errorPayload = await res.json().catch(() => ({}));
+        throw new Error(errorPayload?.error || `AI request failed (${res.status})`);
+      }
+
       const data = await res.json();
-      setAnswer(data.output?.[0]?.content?.[0]?.text ?? "No answer generated.");
-    } catch {
-      setAnswer("AI request failed. Please try again.");
+      setAnswer(data.answer ?? "No answer generated.");
+    } catch (err) {
+      setAnswer(err instanceof Error ? err.message : "AI request failed. Please try again.");
     } finally {
       setLoading(false);
     }
